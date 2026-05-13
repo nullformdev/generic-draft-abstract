@@ -1,0 +1,12 @@
+{
+  "name": "generic-draft-abstract",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "dev": "node --env-file=.env.dev src/dev-server.ts",
+    "logs": "node --env-file=.env.dev src/log-service.ts",
+    "format": "biome format --write .",
+    "lint": "biome lint ."
+  }
+}

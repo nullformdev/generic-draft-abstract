@@ -1,0 +1,85 @@
+/**
+ * sessions.ts — session management backed by the SQLite sessions table.
+ */
+
+import { randomBytes } from 'node:crypto';
+import { db } from '../db.ts';
+import { logDbOperation } from '../logging/logger.ts';
+import { config } from '../../config.ts';
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+export interface SessionData {
+  lang?: string;
+}
+
+export type UserRole = 'user' | 'admin';
+
+export interface Session {
+  sid: string;
+  userId: number;
+  login: string;
+  role: UserRole;
+  data: SessionData;
+}
+
+// ── Statements ────────────────────────────────────────────────────────────────
+
+const stmtCreate = db.prepare(`
+  INSERT INTO sessions (sid, user_id, data, expires) VALUES (?, ?, ?, ?)
+`);
+
+const stmtGet = db.prepare(`
+  SELECT sessions.sid, sessions.user_id, sessions.data, users.login, users.role
+  FROM sessions
+  JOIN users ON users.id = sessions.user_id
+  WHERE sessions.sid = ? AND sessions.expires > strftime('%Y-%m-%dT%H:%M:%SZ','now')
+`);
+
+const stmtDestroy = db.prepare(`
+  DELETE FROM sessions WHERE sid = ?
+`);
+
+const stmtUpdate = db.prepare(`
+  UPDATE sessions SET data = ? WHERE sid = ?
+`);
+
+const stmtPurge = db.prepare(`
+  DELETE FROM sessions WHERE expires <= strftime('%Y-%m-%dT%H:%M:%SZ','now')
+`);
+
+// ── Public API ────────────────────────────────────────────────────────────────
+
+export function createSession(userId: number, data: SessionData = {}): string {
+  const sid = randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + config.SESSION_MAX_AGE).toISOString();
+  logDbOperation('sessions.create', () => stmtCreate.run(sid, userId, JSON.stringify(data), expires));
+  return sid;
+}
+
+export function getSession(sid: string): Session | undefined {
+  const row = logDbOperation('sessions.get', () => stmtGet.get(sid)) as
+    | { sid: string; user_id: number; login: string; role: UserRole; data: string }
+    | undefined;
+  if (!row) return undefined;
+
+  return {
+    sid: row.sid,
+    userId: row.user_id,
+    login: row.login,
+    role: row.role,
+    data: JSON.parse(row.data) as SessionData,
+  };
+}
+
+export function updateSessionData(sid: string, data: SessionData): void {
+  logDbOperation('sessions.updateData', () => stmtUpdate.run(JSON.stringify(data), sid));
+}
+
+export function destroySession(sid: string): void {
+  logDbOperation('sessions.destroy', () => stmtDestroy.run(sid));
+}
+
+export function purgeExpired(): void {
+  logDbOperation('sessions.purgeExpired', () => stmtPurge.run());
+}

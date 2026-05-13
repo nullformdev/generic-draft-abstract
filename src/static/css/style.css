@@ -1,0 +1,251 @@
+/* generic-draft-abstract — minimal styles */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #111;
+  color: #eee;
+  line-height: 1.5;
+}
+
+a {
+  color: #7cb8ff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: #1a1a1a;
+  border-bottom: 1px solid #333;
+}
+
+.nav-logo {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.nav-links,
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-links button {
+  background: none;
+  border: none;
+  color: #7cb8ff;
+  cursor: pointer;
+  font: inherit;
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown > summary {
+  list-style: none;
+  cursor: pointer;
+  color: #7cb8ff;
+}
+
+.nav-dropdown > summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-dropdown[open] .nav-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  min-width: 12rem;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 0.4rem;
+  padding: 0.75rem;
+  z-index: 100;
+}
+
+.nav-dropdown-link {
+  display: block;
+  color: #7cb8ff;
+  font-size: 0.9rem;
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  background: #111;
+  border-bottom: 1px solid #333;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  margin-bottom: 1.25rem;
+}
+
+.topbar-label {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #eee;
+}
+
+.home-page {
+  min-height: 50vh;
+}
+
+.admin-section {
+  margin-bottom: 1.5rem;
+  scroll-margin-top: 4rem;
+}
+
+.admin-section h2 {
+  margin-bottom: 0.6rem;
+  font-size: 1.05rem;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #333;
+  border-radius: 0.5rem;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 480px;
+}
+
+.admin-table th,
+.admin-table td {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid #2a2a2a;
+  vertical-align: top;
+  font-size: 0.86rem;
+}
+
+.admin-table th {
+  background: #181818;
+  color: #ddd;
+  position: sticky;
+  top: 0;
+}
+
+.auth-form {
+  max-width: 360px;
+  margin: 3rem auto;
+}
+
+.auth-form h1 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.auth-form label {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.auth-form input {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  border: 1px solid #444;
+  border-radius: 0.25rem;
+  background: #222;
+  color: #eee;
+  font: inherit;
+}
+
+.auth-form button {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.5rem;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font: inherit;
+}
+
+.auth-form .error {
+  color: #f87171;
+  margin-bottom: 1rem;
+}
+
+.auth-form .link {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: #2a2a2a;
+  color: #ddd;
+  border: 2px solid #666;
+  border-radius: 0.4rem;
+  padding: 0.65rem 1rem;
+  font-size: 1.6rem;
+  line-height: 1;
+  font-weight: 700;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 100;
+}
+
+.btn-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.btn-top:hover {
+  color: #fff;
+  border-color: #aaa;
+  background: #333;
+}
+
+@media (max-width: 600px) {
+  .nav {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nav-dropdown[open] .nav-dropdown-panel {
+    left: 0;
+    right: auto;
+  }
+}
