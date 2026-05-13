@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "check": "tsc --noEmit",
-    "dev": "node --env-file=.env.dev src/dev-server.ts",
+    "dev": "node --watch --env-file=.env.dev src/dev-server.ts",
     "logs": "node --env-file=.env.dev src/log-service.ts",
     "format": "biome format --write .",
     "lint": "biome lint ."
