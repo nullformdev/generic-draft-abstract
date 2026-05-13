@@ -80,16 +80,19 @@ server {
 
     location /static/ {
         alias ${APP_DIR}/static/;
+        add_header Cache-Control "no-cache" always;
         try_files \$uri =404;
     }
 
     location /engine/ {
         alias ${APP_DIR}/src/engine/;
+        add_header Cache-Control "no-cache" always;
         try_files \$uri =404;
     }
 
     location /parts/ {
         alias ${APP_DIR}/src/parts/;
+        add_header Cache-Control "no-cache" always;
         try_files \$uri =404;
     }
 }

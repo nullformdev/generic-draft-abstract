@@ -26,6 +26,7 @@ In dev mode, Node serves:
 - `/parts/` from `src/parts/`
 
 Only `.js` files are served from `/engine/` and `/parts/`; `baker.ts` remains server-only and returns 404.
+Development static responses use `Cache-Control: no-store` so local asset edits are not hidden by browser cache.
 
 ## Production Runtime
 
@@ -48,6 +49,7 @@ location /parts/ { ... }
 ```
 
 Node owns application pages and APIs not matched by static aliases.
+Node HTML and JSON helpers send `Cache-Control: no-store` because page shells and API responses may contain session-specific state.
 
 ## nginx Locations
 
@@ -56,16 +58,19 @@ Static aliases must be declared before the generic proxy route:
 ```nginx
 location /static/ {
     alias /path/to/generic-draft-abstract/static/;
+    add_header Cache-Control "no-cache" always;
     try_files $uri =404;
 }
 
 location /engine/ {
     alias /path/to/generic-draft-abstract/src/engine/;
+    add_header Cache-Control "no-cache" always;
     try_files $uri =404;
 }
 
 location /parts/ {
     alias /path/to/generic-draft-abstract/src/parts/;
+    add_header Cache-Control "no-cache" always;
     try_files $uri =404;
 }
 
@@ -80,6 +85,7 @@ location / {
 ```
 
 If `/engine/core.js` or `/parts/.../index.js` returns 404 in production, restarting Node will not fix it. The nginx alias or deployed file set is wrong.
+Production browser assets use `Cache-Control: no-cache`: browsers may store them, but must revalidate before reuse. Do not use long-lived immutable caching for stable JS/CSS/module URLs unless the project adopts versioned filenames or a build manifest.
 
 ## Router
 

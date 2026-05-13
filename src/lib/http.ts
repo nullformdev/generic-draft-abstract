@@ -16,8 +16,10 @@ export class BodyTooLargeError extends Error {
   }
 }
 
+const NO_STORE = { 'Cache-Control': 'no-store' };
+
 export function redirect(res: ServerResponse, location: string): void {
-  res.writeHead(302, { Location: location });
+  res.writeHead(302, { ...NO_STORE, Location: location });
   res.end();
 }
 
@@ -26,6 +28,7 @@ const CSP =
 
 export function html(res: ServerResponse, body: string, status = 200): void {
   res.writeHead(status, {
+    ...NO_STORE,
     'Content-Type': 'text/html; charset=utf-8',
     'Content-Security-Policy': CSP,
   });
@@ -44,17 +47,17 @@ export function checkCsrf(req: IncomingMessage, res: ServerResponse): boolean {
 }
 
 export function json(res: ServerResponse, status: number, data: unknown): void {
-  res.writeHead(status, { 'Content-Type': 'application/json' });
+  res.writeHead(status, { ...NO_STORE, 'Content-Type': 'application/json' });
   res.end(JSON.stringify(data));
 }
 
 export function notFound(res: ServerResponse, message = 'Not found'): void {
-  res.writeHead(404, { 'Content-Type': 'text/plain' });
+  res.writeHead(404, { ...NO_STORE, 'Content-Type': 'text/plain' });
   res.end(message);
 }
 
 export function forbidden(res: ServerResponse, message = 'Forbidden'): void {
-  res.writeHead(403, { 'Content-Type': 'text/plain' });
+  res.writeHead(403, { ...NO_STORE, 'Content-Type': 'text/plain' });
   res.end(message);
 }
 
